@@ -123,7 +123,13 @@ namespace LasLibNet.Reader
             // open the file
             try
             {
-                streamin = File.OpenRead(file_name);
+                using(var mmf= MemoryMappedFile.CreateFromFile(file_name, FileMode.Open))
+                {
+                    using (var accessor = mmf.CreateViewAccessor())
+                    {
+                       streamin = mmf.CreateViewStream();
+                    }
+                }
                 leaveStreamInOpen = false;
             }
             catch
